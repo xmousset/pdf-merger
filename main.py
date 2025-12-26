@@ -23,6 +23,7 @@ def select_files():
         return None
     
     pdf_paths = [Path(f) for f in pdf_files]
+    pdf_paths.sort()
     merge_pdf(pdf_paths)
 
 
@@ -55,6 +56,7 @@ def select_folder():
         return None
     
     pdf_paths = [Path(folder) / f for f in pdf_names]
+    pdf_paths.sort()
     merge_pdf(pdf_paths)
 
 
