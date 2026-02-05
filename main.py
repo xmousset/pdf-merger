@@ -12,16 +12,16 @@ def select_files():
     objects and calls merge_pdf with the Path list.
     """
     pdf_files = filedialog.askopenfilenames(
-        title= "PDF merger - from files",
-        filetypes= [("PDF files", "*.pdf")],
-        initialdir= Path(__file__).parent
+        title="PDF merger - from files",
+        filetypes=[("PDF files", "*.pdf")],
+        initialdir=Path(__file__).parent,
     )
     if len(pdf_files) == 1:
         messagebox.showerror("Error", "Please select at least 2 PDF files.")
         return None
     if not pdf_files:
         return None
-    
+
     pdf_paths = [Path(f) for f in pdf_files]
     pdf_paths.sort()
     merge_pdf(pdf_paths)
@@ -33,34 +33,30 @@ def select_folder():
     paths to Path objects and calls merge_pdf with the Path list.
     """
     folder = filedialog.askdirectory(
-        title= "PDF merger - from folder",
-        initialdir= Path(__file__).parent,
+        title="PDF merger - from folder",
+        initialdir=Path(__file__).parent,
     )
     if not folder:
         return None
-    
-    pdf_names = [f
-        for f in os.listdir(folder)
-        if f.lower().endswith(".pdf")
-    ]
-    
+
+    pdf_names = [f for f in os.listdir(folder) if f.lower().endswith(".pdf")]
+
     if not pdf_names:
         messagebox.showerror("Error", "No PDF in selected folder.")
         return None
-    
+
     if len(pdf_names) == 1:
         messagebox.showerror(
-            "Error",
-            "Please select a folder with at least 2 PDF files."
+            "Error", "Please select a folder with at least 2 PDF files."
         )
         return None
-    
+
     pdf_paths = [Path(folder) / f for f in pdf_names]
     pdf_paths.sort()
     merge_pdf(pdf_paths)
 
 
-def merge_pdf(pdf_paths : list[Path]):
+def merge_pdf(pdf_paths: list[Path]):
     """Merges multiple PDF files into a single PDF file. Prompts the user to
     select the output pdf path via a save file dialog.
     """
@@ -68,19 +64,19 @@ def merge_pdf(pdf_paths : list[Path]):
     root.withdraw()
 
     output_path = filedialog.asksaveasfilename(
-        defaultextension= ".pdf",
-        filetypes= [("PDF files", "*.pdf")],
-        title= "Save PDF as"
+        defaultextension=".pdf",
+        filetypes=[("PDF files", "*.pdf")],
+        title="Save PDF as",
     )
-    
+
     print(f"Merging PDFs...")
-    
+
     merger = PdfMerger()
     for pdf in pdf_paths:
         merger.append(pdf)
     merger.write(output_path)
     merger.close()
-    
+
     print(f"Merged {len(pdf_paths)} PDFs into {output_path}")
 
 
@@ -98,22 +94,20 @@ def main_tk():
     pos_y = int(screen_height / 4 - window_height / 2)
     root.geometry(f"{window_width}x{window_height}+{pos_x}+{pos_y}")
     root.resizable(False, False)
-    
+
     nb_cols = 5
     nb_rows = 4
-    
+
     label = tk.Label(
-        root,
-        text= "Choose a merging option:",
-        font= ("Calibri", 15)
+        root, text="Choose a merging option:", font=("Calibri", 15)
     )
-    label.grid(row= 0, column= 0, columnspan= nb_cols)
+    label.grid(row=0, column=0, columnspan=nb_cols)
 
     btn_files = tk.Button(
         root,
         text="Select Files",
-        command= select_files,
-        font= ("Calibri", 15, "bold")
+        command=select_files,
+        font=("Calibri", 15, "bold"),
     )
     btn_files.grid(row=2, column=1)
 
@@ -121,16 +115,16 @@ def main_tk():
         root,
         text="Select Folder",
         command=select_folder,
-        font= ("Calibri", 15, "bold")
+        font=("Calibri", 15, "bold"),
     )
     btn_folder.grid(row=2, column=3)
 
     for i in range(nb_rows):
-        root.grid_rowconfigure(i, weight= 1)
-    
+        root.grid_rowconfigure(i, weight=1)
+
     for i in range(nb_cols):
-        root.grid_columnconfigure(i, weight= 1)
-    
+        root.grid_columnconfigure(i, weight=1)
+
     root.mainloop()
 
 
