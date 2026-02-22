@@ -1,9 +1,15 @@
+"""
+@version: 1.0
+@last update: 22-02-2026
+"""
+
 import os
 import tkinter as tk
 from pathlib import Path
 from tkinter import filedialog, messagebox
 
 from PyPDF2 import PdfMerger
+
 
 def select_files():
     """Opens a file dialog for the user to select multiple PDF files to merge.
@@ -17,7 +23,7 @@ def select_files():
     )
     if not pdf_files:
         return
-    
+
     if len(pdf_files) < 2:
         messagebox.showerror("Error", "Select at least 2 PDF files.")
         return None
@@ -40,7 +46,7 @@ def select_folder():
         return None
     else:
         folder = Path(selected_folder)
-        
+
     pdf_names = [f for f in os.listdir(folder) if f.lower().endswith(".pdf")]
 
     if not pdf_names:
@@ -70,7 +76,7 @@ def merge_pdf(pdf_paths: list[Path] | list[str]):
         filetypes=[("PDF files", "*.pdf")],
         title="Save PDF as",
     )
-    
+
     if not selected_output:
         output_path = Path(pdf_paths[0]).parent / "merged.pdf"
     else:
