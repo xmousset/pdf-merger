@@ -5,7 +5,6 @@ from tkinter import filedialog, messagebox
 
 from PyPDF2 import PdfMerger
 
-
 def select_files():
     """Opens a file dialog for the user to select multiple PDF files to merge.
     If at least two files are selected, converts those file paths to Path
@@ -14,12 +13,13 @@ def select_files():
     pdf_files = filedialog.askopenfilenames(
         title="PDF merger - from files",
         filetypes=[("PDF files", "*.pdf")],
-        initialdir=Path(__file__).parent,
+        initialdir=Path().home(),
     )
-    if len(pdf_files) == 1:
-        messagebox.showerror("Error", "Please select at least 2 PDF files.")
-        return None
     if not pdf_files:
+        return
+    
+    if len(pdf_files) < 2:
+        messagebox.showerror("Error", "Select at least 2 PDF files.")
         return None
 
     pdf_paths = [Path(f) for f in pdf_files]
@@ -32,42 +32,49 @@ def select_folder():
     files. If the folder contains at least two PDF files, converts those file
     paths to Path objects and calls merge_pdf with the Path list.
     """
-    folder = filedialog.askdirectory(
+    selected_folder = filedialog.askdirectory(
         title="PDF merger - from folder",
-        initialdir=Path(__file__).parent,
+        initialdir=Path().home(),
     )
-    if not folder:
+    if not selected_folder:
         return None
-
+    else:
+        folder = Path(selected_folder)
+        
     pdf_names = [f for f in os.listdir(folder) if f.lower().endswith(".pdf")]
 
     if not pdf_names:
         messagebox.showerror("Error", "No PDF in selected folder.")
         return None
 
-    if len(pdf_names) == 1:
+    if len(pdf_names) < 2:
         messagebox.showerror(
-            "Error", "Please select a folder with at least 2 PDF files."
+            "Error", "Select a folder with at least 2 PDF files."
         )
         return None
 
-    pdf_paths = [Path(folder) / f for f in pdf_names]
+    pdf_paths = [folder / f for f in pdf_names]
     pdf_paths.sort()
     merge_pdf(pdf_paths)
 
 
-def merge_pdf(pdf_paths: list[Path]):
+def merge_pdf(pdf_paths: list[Path] | list[str]):
     """Merges multiple PDF files into a single PDF file. Prompts the user to
     select the output pdf path via a save file dialog.
     """
     root = tk.Tk()
     root.withdraw()
 
-    output_path = filedialog.asksaveasfilename(
+    selected_output = filedialog.asksaveasfilename(
         defaultextension=".pdf",
         filetypes=[("PDF files", "*.pdf")],
         title="Save PDF as",
     )
+    
+    if not selected_output:
+        output_path = Path(pdf_paths[0]).parent / "merged.pdf"
+    else:
+        output_path = Path(selected_output)
 
     print(f"Merging PDFs...")
 
@@ -77,7 +84,10 @@ def merge_pdf(pdf_paths: list[Path]):
     merger.write(output_path)
     merger.close()
 
-    print(f"Merged {len(pdf_paths)} PDFs into {output_path}")
+    messagebox.showinfo(
+        "Success",
+        f"Merged {len(pdf_paths)} PDFs into {output_path.name}.",
+    )
 
 
 def main_tk():

@@ -8,15 +8,9 @@ The app provides two main options:
 
 After selection, you are prompted to choose the output file location. The selected PDFs are merged into a single PDF at the chosen location.
 
-## Installation
-1. Clone or download this repository.
-2. Install the required package:
-   ```bash
-   pip install PyPDF2
-   ```
-
-## Code Structure
-- `select_files()` : Lets the user select multiple PDF files and then merge them in ascending order.
-- `select_folder()` : Lets the user select a folder and then merge all PDFs inside in ascending order.
-- `merge_pdf(pdf_paths)` : Merges the given list of PDF files in ascending order and prompts for the output location.
-- `main_tk()` : Sets up the GUI and handles user interaction.
+## Information
+Either use the application or run the `main.py` python code after installing PyPDF2.
+The application is created using the following command in the appropriate directory:
+``` powershell
+pyinstaller --onefile --windowed --icon=res/pdf_merger.ico main.py
+```
